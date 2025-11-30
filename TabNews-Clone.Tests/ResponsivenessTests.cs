@@ -1,11 +1,10 @@
 ﻿namespace TabNews_Clone.Tests
 {
-  public class ResponsivessTests
+  public class ResponsivenessTests
   {
     [Fact]
     public void WatchModeHeartbeat()
     {
-      Console.WriteLine($"Watch triggered at: {DateTime.UtcNow}");
       Assert.True(true);
     }
   }
