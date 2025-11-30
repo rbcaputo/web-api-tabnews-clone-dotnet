@@ -2,7 +2,10 @@
   <Folder Name="/Build/">
     <File Path="build/Program.cs" />
     <File Path="build/Run.csproj" />
-    <File Path="build/scripts.json" />
+    <File Path="build/scripts.jsonc" />
+    <Properties Name="FolderGlobals">
+      <Property Name="D_5_4Visual Studio_4source_4repos_4TabNews-Clone_4build_4scripts_1json__JsonSchema" />
+    </Properties>
   </Folder>
   <Project Path="TabNews-Clone.Core/TabNews-Clone.Core.csproj" />
   <Project Path="TabNews-Clone.Tests/TabNews-Clone.Tests.csproj" />

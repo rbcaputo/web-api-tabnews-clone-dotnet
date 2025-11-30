@@ -1,24 +1,31 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 string repoBase = AppContext.BaseDirectory;
-string scriptsPath = Path.Combine(Path.GetDirectoryName(repoBase) ?? ".", "scripts.json");
+string scriptsPath = Path.Combine(Path.GetDirectoryName(repoBase) ?? ".", "scripts.jsonc");
 
 // Fallback if running with dotnet run where BaseDirectory points into bin; try the project folder.
 if (!File.Exists(scriptsPath))
 {
-  var alt = Path.Combine(Directory.GetCurrentDirectory(), "build", "scripts.json");
+  var alt = Path.Combine(Directory.GetCurrentDirectory(), "build", "scripts.jsonc");
   if (File.Exists(alt)) scriptsPath = alt;
 }
 
 if (!File.Exists(scriptsPath))
 {
-  Console.Error.WriteLine($"Could not find scripts.json at: {scriptsPath}");
+  Console.Error.WriteLine($"Could not find scripts.jsonc at: {scriptsPath}.");
   Environment.Exit(2);
 }
 
-var scripts = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(scriptsPath))
+var options = new JsonSerializerOptions
+{
+  ReadCommentHandling = JsonCommentHandling.Skip,
+  AllowTrailingCommas = true
+};
+
+var scripts = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(scriptsPath), options)
   ?? new Dictionary<string, string>();
 
 if (args.Length == 0)
@@ -66,6 +73,12 @@ var psi = new ProcessStartInfo
   RedirectStandardError = false
 };
 
-var process = Process.Start(psi)!;
+var process = Process.Start(psi);
+if (process == null)
+{
+  Console.Error.WriteLine("Failed to start process.");
+  Environment.Exit(4);
+}
+
 process.WaitForExit();
 Environment.Exit(process.ExitCode);

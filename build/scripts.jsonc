@@ -4,3 +4,5 @@
   "test": "dotnet test",
   "watch-tests": "dotnet watch test --project ./TabNews-Clone.Tests/TabNews-Clone.Tests.csproj"
 }
+
+// Usage: In terminal run the command "dotnet run --project build/Run.csproj <script-name>".
