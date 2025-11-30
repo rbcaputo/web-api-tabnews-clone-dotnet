@@ -1,0 +1,8 @@
+{
+  "reset-db": "dotnet ef drop database -f && dotnet ef database update",
+  "lint": "dotnet format",
+  "test": "dotnet test",
+  "watch-test": "cd TabNews-Clone.Tests && dotnet watch test"
+}
+
+// Usage: In terminal run the command "dotnet run --project tools/Run <script-name>".

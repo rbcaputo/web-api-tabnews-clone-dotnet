@@ -3,15 +3,19 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-string repoBase = AppContext.BaseDirectory;
-string scriptsPath = Path.Combine(Path.GetDirectoryName(repoBase) ?? ".", "scripts.jsonc");
+string exePath = AppContext.BaseDirectory;
+string repoRoot = Directory.GetParent(exePath)?
+  .Parent?
+  .Parent?
+  .Parent?
+  .Parent?
+  .Parent?
+  .FullName ?? Directory.GetCurrentDirectory();
 
-// Fallback if running with dotnet run where BaseDirectory points into bin; try the project folder.
-if (!File.Exists(scriptsPath))
-{
-  var alt = Path.Combine(Directory.GetCurrentDirectory(), "build", "scripts.jsonc");
-  if (File.Exists(alt)) scriptsPath = alt;
-}
+// Print the repo root to validate.
+Console.WriteLine($"Repo root: {repoRoot}");
+
+string scriptsPath = Path.Combine(repoRoot, "scripts.jsonc");
 
 if (!File.Exists(scriptsPath))
 {
@@ -25,8 +29,9 @@ var options = new JsonSerializerOptions
   AllowTrailingCommas = true
 };
 
-var scripts = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(scriptsPath), options)
-  ?? new Dictionary<string, string>();
+var scripts = JsonSerializer.Deserialize<Dictionary<string, string>>(
+  File.ReadAllText(scriptsPath), options
+) ?? new Dictionary<string, string>();
 
 if (args.Length == 0)
 {
@@ -35,10 +40,11 @@ if (args.Length == 0)
   return;
 }
 
-var scriptName = args[0];
+string scriptName = args[0];
 if (!scripts.TryGetValue(scriptName, out var command))
 {
-  Console.Error.WriteLine($"Script '{scriptName}' not found. Available scripts:");
+  Console.Error.WriteLine($"Script '{scriptName}' not found.");
+  Console.WriteLine("Available scripts:");
   foreach (var key in scripts.Keys) Console.WriteLine($"  {key}");
   Environment.Exit(3);
 }
@@ -47,8 +53,10 @@ if (!scripts.TryGetValue(scriptName, out var command))
 if (args.Length > 1)
 {
   string[] extras = args[1..];
-  string JoinArg(string arg) => arg.Contains(' ') ? $"\"{arg.Replace("\"", "\\\"")}\"" : arg;
-  command += " " + string.Join(' ', extras.Select(JoinArg));
+  string Quote(string arg) =>
+    arg.Contains(' ') ? $"\"{arg.Replace("\"", "\\\"")}\"" : arg;
+
+  command += " " + string.Join(' ', extras.Select(Quote));
 }
 
 string shell, shellArg;
@@ -66,12 +74,11 @@ else
 var psi = new ProcessStartInfo
 {
   FileName = shell,
-  ArgumentList = { shellArg, command },
-  UseShellExecute = false,
-  RedirectStandardInput = false,
-  RedirectStandardOutput = false,
-  RedirectStandardError = false
+  WorkingDirectory = repoRoot,
+  UseShellExecute = false
 };
+psi.ArgumentList.Add(shellArg);
+psi.ArgumentList.Add(command);
 
 var process = Process.Start(psi);
 if (process == null)
