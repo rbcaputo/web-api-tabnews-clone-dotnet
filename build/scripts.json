@@ -1,0 +1,6 @@
+{
+  "reset-db": "dotnet ef drop database -f && dotnet ef database update",
+  "lint": "dotnet format",
+  "test": "dotnet test",
+  "watch-tests": "dotnet watch test --project ./TabNews-Clone.Tests/TabNews-Clone.Tests.csproj"
+}

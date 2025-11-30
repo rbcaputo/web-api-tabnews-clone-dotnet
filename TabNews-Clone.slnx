@@ -1,4 +1,9 @@
 <Solution>
+  <Folder Name="/Build/">
+    <File Path="build/Program.cs" />
+    <File Path="build/Run.csproj" />
+    <File Path="build/scripts.json" />
+  </Folder>
   <Project Path="TabNews-Clone.Core/TabNews-Clone.Core.csproj" />
   <Project Path="TabNews-Clone.Tests/TabNews-Clone.Tests.csproj" />
 </Solution>
