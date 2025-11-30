@@ -1,0 +1,6 @@
+@TabNews_Clone.Core_HostAddress = http://localhost:5122
+
+GET {{TabNews_Clone.Core_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

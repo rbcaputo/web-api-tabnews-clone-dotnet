@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="TabNews-Clone.Core/TabNews-Clone.Core.csproj" />
+  <Project Path="TabNews-Clone.Tests/TabNews-Clone.Tests.csproj" />
+</Solution>
